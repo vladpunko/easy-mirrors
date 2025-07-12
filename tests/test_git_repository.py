@@ -2,9 +2,11 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
+import io
+import json
 import logging
-import pathlib
-import reprlib
+import os
+import shutil
 
 import pytest
 
@@ -19,7 +21,7 @@ GIT_CONFIG_TEMPLATE = """
 
 @pytest.fixture
 def local_path(fs):
-    path = pathlib.Path("root")
+    path = os.path.normpath("root")
     fs.create_dir(path)
 
     return path
@@ -37,12 +39,15 @@ def repository(local_path, url):
 
 @pytest.fixture
 def git_directory(fs, local_path, url):
-    fs.create_file(local_path / "HEAD")
+    fs.create_file(os.path.join(local_path, "HEAD"))
 
     for path in {"objects", "refs"}:
-        fs.create_dir(local_path / path)
+        fs.create_dir(os.path.join(local_path, path))
 
-    (local_path / "config").write_text(GIT_CONFIG_TEMPLATE.format(url))
+    with io.open(
+        os.path.join(local_path, "config"), mode="wt", encoding="utf-8"
+    ) as stream_out:
+        stream_out.write(GIT_CONFIG_TEMPLATE.format(url))
 
 
 @pytest.fixture
@@ -56,7 +61,7 @@ def test_repository_string_representation(local_path, url):
     assert repr(repository) == (
         "GitRepository(local_path={0!r}, url={1!r})".format(str(local_path), url)
     )
-    assert str(repository) == reprlib.repr(repository.to_dict())
+    assert str(repository) == json.dumps(repository.to_dict(), indent=2)
 
 
 def test_repository_to_dict(repository, local_path, url):
@@ -80,7 +85,7 @@ def test_repository_to_dict(repository, local_path, url):
 def test_repository_from_url(local_path, url):
     repository = git_repository.GitRepository.from_url(parent_path=local_path, url=url)
 
-    assert repository.local_path == local_path / "cpython.git"
+    assert repository.local_path == os.path.join(local_path, "cpython.git")
 
 
 def test_repository_create_local_copy(
@@ -106,20 +111,26 @@ def test_repository_exists_locally(git_directory, repository):
 
 
 def test_repository_exists_locally_no_sections(git_directory, repository, local_path):
-    (local_path / "config").write_text("")
+    with io.open(
+        os.path.join(local_path, "config"), mode="wt", encoding="utf-8"
+    ) as stream_out:
+        stream_out.write("")
 
     assert repository.exists_locally() is False
 
 
 def test_repository_exists_locally_wrong_url(git_directory, repository, local_path):
-    (local_path / "config").write_text(GIT_CONFIG_TEMPLATE.format("https://google.com"))
+    with io.open(
+        os.path.join(local_path, "config"), mode="wt", encoding="utf-8"
+    ) as stream_out:
+        stream_out.write(GIT_CONFIG_TEMPLATE.format("https://google.com"))
 
     assert repository.exists_locally() is False
 
 
 def test_repository_not_exists_locally(repository, local_path):
     assert not repository.exists_locally()  # directory exists but not a git repository
-    local_path.rmdir()
+    shutil.rmtree(local_path)
     assert not repository.exists_locally()
 
 
@@ -140,7 +151,8 @@ def test_repository_not_exists_on_remote(local_path):
 
 
 def test_repository_update_local_copy_with_error(caplog, repository, local_path):
-    local_path.rmdir()
+    shutil.rmtree(local_path)
+
     with caplog.at_level(logging.ERROR):
         with pytest.raises(exceptions.ExternalProcessError) as error:
             repository.update_local_copy()

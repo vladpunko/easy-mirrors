@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import abc
 import collections.abc
-import pathlib
+import os
 import typing
 
 from easy_mirrors import exceptions
@@ -37,20 +37,20 @@ class _Field(abc.ABC, typing.Generic[_V, _T]):
         raise NotImplementedError
 
 
-class PathField(_Field[str | pathlib.Path, pathlib.Path]):
+class PathField(_Field[str, str]):
     """A specialized field for handling file system path inputs in configurations."""
 
-    def process_value(self, value: str | pathlib.Path) -> pathlib.Path:
+    def process_value(self, value: str) -> str:
         """Checks the path input for validity and expand it to an absolute format.
 
         Parameters
         ----------
-        value : str or pathlib.Path
+        value : str
             The input value to process.
 
         Returns
         -------
-        pathlib.Path
+        str
             A normalized and user-expanded path object.
 
         Raises
@@ -58,7 +58,7 @@ class PathField(_Field[str | pathlib.Path, pathlib.Path]):
         ConfigError
             Raised when the provided value is empty or not a valid path type.
         """
-        if not isinstance(value, (str, pathlib.Path)):
+        if not isinstance(value, str):
             raise exceptions.ConfigError(
                 f"Path must be string, but received: {type(value).__name__!s}."
             )
@@ -66,7 +66,7 @@ class PathField(_Field[str | pathlib.Path, pathlib.Path]):
         if not value:
             raise exceptions.ConfigError("Path can not be empty.")
 
-        return pathlib.Path(value).expanduser()
+        return os.path.expanduser(os.path.normpath(value))
 
 
 class SequenceField(_Field[typing.Iterable[str], list[str]]):

@@ -5,10 +5,10 @@
 from __future__ import annotations
 
 import configparser
-import dataclasses
+import io
 import json
 import logging
-import pathlib
+import os
 import re
 import typing
 
@@ -21,16 +21,15 @@ __all__ = ["Config"]
 _T = typing.TypeVar("_T", bound="Config")
 
 
-@dataclasses.dataclass(frozen=True)
 class Config:
     """Configuration for local repository mirroring.
 
-    This configuration class is immutable and holds the local mirror path along
-    with a list of remote repository urls to mirror.
+    This configuration class holds the local mirror path along with a list
+    of remote repository urls to mirror.
 
     Attributes
     ----------
-    path : str or pathlib.Path
+    path : str
         The local root directory where mirrored repositories will be stored.
 
     repositories : list[str]
@@ -39,18 +38,20 @@ class Config:
 
     section: typing.ClassVar[str] = "easy_mirrors"
 
-    path: pathlib.Path = dataclasses.field(default=fields.PathField())  # type: ignore
-    repositories: list[str] = dataclasses.field(
-        default=fields.SequenceField()  # type: ignore
-    )
+    path: str = fields.PathField()  # type: ignore
+    repositories: list[str] = fields.SequenceField()  # type: ignore
+
+    def __init__(self, path: str, repositories: list[str]) -> None:
+        self.path = path
+        self.repositories = repositories
 
     @classmethod
-    def load(cls: type[_T], path: str | pathlib.Path) -> _T:
+    def load(cls: type[_T], path: str) -> _T:
         """Factory method to create a new configuration instance.
 
         Parameters
         ----------
-        path : str or pathlib.Path
+        path : str
             The local path to the configurations.
 
         Returns
@@ -69,7 +70,7 @@ class Config:
         """
         config_parser = configparser.ConfigParser()
         try:
-            with pathlib.Path(path).expanduser().open(encoding="utf-8") as stream_in:
+            with io.open(os.path.expanduser(path), encoding="utf-8") as stream_in:
                 config_parser.read_file(stream_in)
         except OSError as err:
             logger.error(
@@ -108,7 +109,7 @@ class Config:
         )
 
     def __str__(self) -> str:
-        return json.dumps(self.to_dict(), default=str, indent=2)  # serialize
+        return json.dumps(self.to_dict(), indent=2)  # serialize
 
     def __repr__(self) -> str:
         """Returns string representation of an instance for debugging."""
@@ -118,5 +119,5 @@ class Config:
             f"(path={str(self.path)!r}, repositories={self.repositories!s})"
         )
 
-    def to_dict(self) -> dict[str, pathlib.Path | list[str]]:
-        return dataclasses.asdict(self)
+    def to_dict(self) -> dict[str, list[str]]:
+        return vars(self)

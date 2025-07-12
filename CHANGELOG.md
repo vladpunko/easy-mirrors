@@ -6,7 +6,6 @@
 
 - Initial implementation of the configuration parser.
 - Initial logic for mirroring repositories.
-- Yocto build process for generating a docker image.
 
 ### Changed
 

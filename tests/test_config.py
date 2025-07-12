@@ -2,9 +2,10 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
+import io
 import json
 import logging
-import pathlib
+import os
 
 import pytest
 
@@ -19,7 +20,7 @@ CONFIG_TEMPLATE = """
 
 @pytest.fixture
 def path():
-    return pathlib.Path("~/root")
+    return os.path.normpath("~/root")
 
 
 @pytest.fixture
@@ -33,26 +34,28 @@ def repositories():
 
 @pytest.fixture
 def configuration_path(fs, path, repositories):
-    config_path = pathlib.Path("config.ini")
-    config_path.write_text(CONFIG_TEMPLATE.format(path, ", ".join(repositories)))
+    config_path = os.path.normpath("config.ini")
+
+    with io.open(config_path, mode="wt", encoding="utf-8") as stream_out:
+        stream_out.write(CONFIG_TEMPLATE.format(path, "\t".join(repositories)))
 
     return config_path
 
 
 @pytest.fixture
 def expected_configuration(path, repositories):
-    return {"path": path.expanduser(), "repositories": repositories}
+    return {"path": os.path.expanduser(path), "repositories": repositories}
 
 
 def test_config_initialization(expected_configuration, path, repositories):
     configuration = config.Config(path=path, repositories=repositories * 5)
 
-    assert configuration.path == path.expanduser()
+    assert configuration.path == os.path.expanduser(path)
     assert configuration.repositories == repositories  # check deduplication
 
     assert repr(configuration) == (
         "Config(path={0!r}, repositories={1!s})".format(
-            str(path.expanduser()), repositories
+            os.path.expanduser(path), repositories
         )
     )
     assert str(configuration) == json.dumps(
@@ -77,16 +80,17 @@ def test_config_to_dict(expected_configuration, path, repositories):
     ],
 )
 def test_config_load(fs, configuration_path, path, repositories, raw_repositories):
-    configuration_path.write_text(CONFIG_TEMPLATE.format(path, raw_repositories))
+    with io.open(configuration_path, mode="wt", encoding="utf-8") as stream_out:
+        stream_out.write(CONFIG_TEMPLATE.format(path, raw_repositories))
 
     configuration = config.Config.load(configuration_path)
 
-    assert configuration.path == path.expanduser()
+    assert configuration.path == os.path.expanduser(path)
     assert configuration.repositories == repositories
 
 
 def test_config_load_with_error(caplog, fs, configuration_path):
-    configuration_path.unlink()
+    os.unlink(configuration_path)
 
     with caplog.at_level(logging.ERROR):
         with pytest.raises(exceptions.FileSystemError) as error:
@@ -102,7 +106,8 @@ def test_config_load_with_error(caplog, fs, configuration_path):
 
 
 def test_config_load_with_decode_error(caplog, fs, configuration_path):
-    configuration_path.write_text("12345")
+    with io.open(configuration_path, mode="wt", encoding="utf-8") as stream_out:
+        stream_out.write("12345")
 
     with caplog.at_level(logging.ERROR):
         with pytest.raises(exceptions.ConfigError) as error:
@@ -118,7 +123,8 @@ def test_config_load_with_decode_error(caplog, fs, configuration_path):
 
 
 def test_validation_during_load_settings(configuration_path):
-    configuration_path.write_text("[easy_mirrors]\n")
+    with io.open(configuration_path, mode="wt", encoding="utf-8") as stream_out:
+        stream_out.write("[easy_mirrors]\n")
 
     with pytest.raises(exceptions.ConfigError) as error:
         config.Config.load(configuration_path)
