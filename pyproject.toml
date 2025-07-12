@@ -1,0 +1,167 @@
+[build-system]
+requires = ["poetry-core>=2.0,<3.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8,<2.0"
+
+[project]
+name = "easy_mirrors"
+version = "0.3.1"
+description = "Simplest way to backup and restore git repositories"
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+authors = [
+  {name = "Vladislav Punko", email = "iam.vlad.punko@gmail.com"},
+]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+keywords = ["automation", "git"]
+dependencies = []
+
+[project.urls]
+"Issue tracker" = "https://github.com/vladpunko/easy_mirrors/issues"
+"Source code" = "https://github.com/vladpunko/easy_mirrors"
+
+[project.scripts]
+easy_mirrors = "easy_mirrors.__main__:main"
+
+[tool.poetry]
+package-mode = true
+packages = [
+  {include = "easy_mirrors", from = "src"},
+]
+include = ["LICENSE", "README.md"]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.8"
+black = "^25.1"
+deptry = "^0.23"
+flake8 = "^7.1"
+isort = "^6.0"
+mypy = "^1.14"
+pre-commit = "^4.1"
+ruff = "^0.9"
+twine = "^6.1"
+
+[tool.poetry.group.tests]
+optional = true
+
+[tool.poetry.group.tests.dependencies]
+coverage = "^7.6"
+pyfakefs = "^5.7"
+pytest = "^8.3"
+pytest-cov = "^6.0"
+pytest-html = "^4.1"
+pytest-mock = "^3.14"
+tox = "^4.24"
+
+[tool.pytest.ini_options]
+addopts = [
+  "-vv",
+  "-x",  # exit instantly on first error or failed test
+  # ---
+  "--cov-report=html",
+  "--cov-report=term",
+  "--cov",
+  "--doctest-modules",
+  "--durations=10",
+  "--failed-first",
+  "--import-mode=importlib",
+  "--new-first",
+  # ---
+  "--html=./.pytest_report/index.html",
+]
+testpaths = ["src/easy_mirrors", "tests"]
+
+[tool.coverage.run]
+branch = true
+omit = [
+  "src/easy_mirrors/__about__.py",
+  "src/easy_mirrors/__main__.py",
+]
+parallel = true
+source = ["src/easy_mirrors"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "@abc.abstractmethod",
+
+  # We have to re-enable the standard pragma.
+  "pragma: no cover",
+
+  # Do not complain about missing debug-only code.
+  "def __repr__",
+  "if self.debug:",
+
+  # No need to complain if tests do not hit defensive assertion code.
+  "pass",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "return NotImplemented",
+
+  # Do not complain if non-runnable code is not run.
+  "if __name__ == .__main__.:",
+  "if 0:",
+  "if False:",
+]
+show_missing = true
+
+[tool.black]
+target-version = ["py310", "py311", "py312"]
+
+[tool.bandit]
+exclude_dirs = [
+  "docs/",
+  "tests/",
+]
+
+[tool.deptry]
+extend_exclude = [
+  "^docs/",
+  "^examples/",
+  "^tests/",
+]
+known_first_party = ["easy_mirrors"]
+
+[tool.isort]
+profile = "black"
+known_local_folder = ["easy_mirrors"]
+
+[tool.mypy]
+disallow_untyped_defs = true
+exclude = [
+  ".pyi$",
+  "^docs/",
+  "^examples/",
+  "^tests/",
+]
+ignore_missing_imports = true
+plugins = "pydantic.mypy"
+strict_optional = true
+
+[tool.ruff]
+exclude = [
+  "*.pyi",
+  "docs/",
+  "tests/",
+]
+line-length = 88
+select = ["A", "B", "C", "E", "F", "N", "W"]
