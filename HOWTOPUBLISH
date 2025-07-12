@@ -1,0 +1,7 @@
+# update the source code and etc
+tox
+poetry build
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+twine upload dist/*
+# create a new version tag: git tag --annotate <version> --message <message>
+# bump the version number: poetry version "$(git describe --abbrev=0)"

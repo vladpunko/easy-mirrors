@@ -7,7 +7,7 @@ To minimize the docker image size and ensure that no unnecessary components were
 To launch the container using a custom configuration file and output directory, execute the following `docker run` command:
 
 ```bash
-docker run -d -v "$(pwd)/easy_mirrors.ini:/easy_mirrors.ini:ro" "vladpunko/easy-mirrors:${IMAGE_TAG?err}"
+docker run -d -v "$(pwd)/easy_mirrors.ini:/easy_mirrors.ini:ro" "docker.io/vladpunko/easy-mirrors:${IMAGE_TAG?err}"
 ```
 
 By default, repositories will be cloned inside the container. It is strongly recommended to mount a directory from your host system to the path specified in the configuration file to persist cloned data and prevent data loss when the container is removed.
