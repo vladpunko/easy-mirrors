@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONDEBUG": "1",
+                "PYTHONFAULTHANDLER": "1",
+                "PYTHONTRACEMALLOC": "1",
+                "PYTHONUNBUFFERED": "1",
+                "PYTHONWARNINGS": "all"
+            },
+            "justMyCode": false,
+            "name": "Python Debugger: Debug",
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "request": "launch",
+            "type": "debugpy"
+        }
+    ],
+    "version": "0.2.0"
+}

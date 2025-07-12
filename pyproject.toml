@@ -45,7 +45,7 @@ package-mode = true
 packages = [
   {include = "easy_mirrors", from = "src"},
 ]
-include = ["LICENSE", "README.md"]
+include = ["CHANGELOG.md", "LICENSE", "README.md"]
 
 [tool.poetry.group.dev]
 optional = true
