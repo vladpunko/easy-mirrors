@@ -11,7 +11,7 @@ import os
 import pathlib
 import reprlib
 import shlex
-import subprocess
+import subprocess  # nosec
 import typing
 
 from easy_mirrors import exceptions
@@ -77,8 +77,13 @@ def _run_git_command(
 
     stdout = stderr = subprocess.DEVNULL if silent else None  # streams
     try:
-        subprocess.check_call(
-            shlex.split(cmd), cwd=cwd, env=env, stdout=stdout, stderr=stderr
+        subprocess.check_call(  # nosec
+            shlex.split(cmd),
+            cwd=cwd,
+            env=env,
+            shell=False,
+            stderr=stderr,
+            stdout=stdout,
         )
     except subprocess.CalledProcessError as err:
         if not silent:

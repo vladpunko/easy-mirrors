@@ -73,7 +73,7 @@ def main() -> typing.NoReturn:
         # Stop this program runtime and return the exit status code.
         sys.exit(getattr(err, "errno", errno.EPERM))
 
-    except KeyboardInterrupt as err:
+    except KeyboardInterrupt:
         logger.info(
             "Abort this program runtime as a consequence of a keyboard interrupt."
         )
