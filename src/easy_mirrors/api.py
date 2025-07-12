@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import logging
+import os
 
 from easy_mirrors import config, git_repository
 
@@ -34,7 +35,7 @@ def make_mirrors(configuration: config.Config) -> None:
         if repository.exists_locally():
             repository.update_local_copy()  # git fetch
         else:
-            if repository.local_path.is_dir():
+            if os.path.isdir(repository.local_path):
                 logger.warning(
                     "Non-mirror repository detected at path: %s.", repository.local_path
                 )

@@ -3,6 +3,7 @@
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
 import logging
+import os
 
 import pytest
 
@@ -23,7 +24,7 @@ def config_mock(mocker):
 @pytest.fixture
 def repository_mock(mocker):
     repository = mocker.Mock()
-    repository.local_path.is_dir.return_value = False
+    repository.local_path = "/root/"
 
     return repository
 
@@ -52,10 +53,11 @@ def test_existing_remote_and_local_repository(
         repository_mock.update_local_copy.assert_called_once()
 
 
-def test_existing_remote_not_local(config_mock, repository_mock, git_repository_mock):
+def test_existing_remote_not_local(
+    fs, config_mock, repository_mock, git_repository_mock
+):
     repository_mock.exists_locally.return_value = False
     repository_mock.exists_on_remote.return_value = True
-    repository_mock.local_path.is_dir.return_value = False
 
     git_repository_mock.from_url.return_value = repository_mock
 
@@ -66,11 +68,12 @@ def test_existing_remote_not_local(config_mock, repository_mock, git_repository_
 
 
 def test_existing_remote_path_is_non_mirror_directory(
-    caplog, config_mock, repository_mock, git_repository_mock
+    caplog, fs, config_mock, repository_mock, git_repository_mock
 ):
+    os.mkdir(repository_mock.local_path)
+
     repository_mock.exists_locally.return_value = False
     repository_mock.exists_on_remote.return_value = True
-    repository_mock.local_path.is_dir.return_value = True
 
     git_repository_mock.from_url.return_value = repository_mock
 

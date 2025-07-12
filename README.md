@@ -36,7 +36,7 @@ Use the following commands to mirror and restore your repository:
 
 ```bash
 # Step -- 1.
-easy_mirrors --period 30  # make mirrors every 30 minutes
+easy-mirrors --period 30  # make mirrors every 30 minutes
 
 # Step -- 2.
 cd /tmp/repositories/easy-mirrors.git

@@ -2,7 +2,7 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
-import pathlib
+import os
 
 import pytest
 
@@ -19,10 +19,10 @@ def configuration():
 
 
 def test_path_field(configuration):
-    path = pathlib.Path("~/root")
+    path = os.path.normpath("~/root")
     configuration.path = path
 
-    assert str(configuration.path) == str(path.expanduser())
+    assert configuration.path == os.path.expanduser(path)
 
 
 @pytest.mark.parametrize("path", ("", None, True, [], {}))

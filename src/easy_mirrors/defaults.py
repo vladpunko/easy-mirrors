@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 
-import pathlib
+import os
 import typing
 
 __all__ = ["CONFIG_PATH"]
 
-CONFIG_PATH: typing.Final[pathlib.Path] = pathlib.Path.home() / "easy_mirrors.ini"
+CONFIG_PATH: typing.Final[str] = os.path.join(
+    os.path.expanduser("~"), "easy_mirrors.ini"
+)

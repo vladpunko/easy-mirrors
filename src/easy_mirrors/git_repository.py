@@ -5,11 +5,9 @@
 from __future__ import annotations
 
 import configparser
-import dataclasses
+import json
 import logging
 import os
-import pathlib
-import reprlib
 import shlex
 import subprocess  # nosec
 import typing
@@ -41,9 +39,7 @@ def _get_repository_name(url: str) -> str:
     return name if name.endswith(".git") else f"{name}.git"
 
 
-def _run_git_command(
-    cmd: str, /, cwd: pathlib.Path | None = None, silent: bool = False
-) -> None:
+def _run_git_command(cmd: str, /, cwd: str | None = None, silent: bool = False) -> None:
     """Executes the provided git command in a new process.
 
     This function is required to run the specified git command in a controlled
@@ -55,7 +51,7 @@ def _run_git_command(
     cmd : str
         The git command to execute. It should look like a normal shell command.
 
-    cwd : pathlib.Path, optional
+    cwd : str, optional
         The working directory in which to run the command. The command will be
         executed in the current working directory unless a path is provided.
 
@@ -95,24 +91,24 @@ def _run_git_command(
         ) from err
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
 class GitRepository:
     """Represents a git repository with local and remote references.
 
     Attributes
     ----------
-    local_path : pathlib.Path
+    local_path : str
         The local directory where the repository is stored.
 
     url : str
         The remote repository url.
     """
 
-    local_path: pathlib.Path
-    url: str
+    def __init__(self, local_path: str, url: str) -> None:
+        self.local_path = local_path
+        self.url = url
 
     @classmethod
-    def from_url(cls: type[_T], parent_path: pathlib.Path, url: str) -> _T:
+    def from_url(cls: type[_T], parent_path: str, url: str) -> _T:
         """Creates a repository instance from its remote url.
 
         This method initializes a repository object using only the remote
@@ -121,7 +117,7 @@ class GitRepository:
 
         Parameters
         ----------
-        parent_path : pathlib.Path
+        parent_path : str
             The directory where the repository should be stored locally.
 
         url : str
@@ -133,11 +129,14 @@ class GitRepository:
             A new instance of the repository class with the computed local path.
         """
         return cls(
-            local_path=(parent_path / _get_repository_name(url)).expanduser(), url=url
+            local_path=os.path.join(
+                os.path.expanduser(parent_path), _get_repository_name(url)
+            ),
+            url=url,
         )
 
     def __str__(self) -> str:
-        return reprlib.repr(self.to_dict())
+        return json.dumps(self.to_dict(), indent=2)
 
     def __repr__(self) -> str:
         """Returns string representation of an instance for debugging."""
@@ -147,8 +146,8 @@ class GitRepository:
             f"(local_path={str(self.local_path)!r}, url={self.url!r})"
         )
 
-    def to_dict(self) -> dict[str, str | pathlib.Path]:
-        return dataclasses.asdict(self)
+    def to_dict(self) -> dict[str, str]:
+        return vars(self)
 
     def create_local_copy(self) -> None:
         """Clones a mirrored copy of the repository onto the local machine.
@@ -179,7 +178,7 @@ class GitRepository:
         bool
             True if the repository is present locally, otherwise false.
         """
-        if not self.local_path.is_dir():
+        if not os.path.isdir(self.local_path):
             return False
 
         for component_name in {
@@ -188,11 +187,11 @@ class GitRepository:
             "refs",
             "HEAD",  # holds reference to the checked-out branch's commit
         }:
-            if not (self.local_path / component_name).exists():
+            if not os.path.exists(os.path.join(self.local_path, component_name)):
                 return False
 
         config_parser = configparser.ConfigParser()
-        config_parser.read(self.local_path / "config")
+        config_parser.read(os.path.join(self.local_path, "config"))
 
         # Check each remote section for a matching url.
         for section in (

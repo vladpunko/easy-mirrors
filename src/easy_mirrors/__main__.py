@@ -12,7 +12,6 @@ import logging
 import sys
 import time
 import typing
-from importlib.metadata import version
 
 from easy_mirrors import api, config, defaults, exceptions
 
@@ -22,9 +21,6 @@ logger = logging.getLogger("easy_mirrors")
 def main() -> typing.NoReturn:
     parser = argparse.ArgumentParser(
         description="Simplest way to mirror and restore git repositories."
-    )
-    parser.add_argument(
-        "-v", "--version", action="version", version=version("easy_mirrors")
     )
     parser.add_argument(
         "-d",
