@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 poetry-plugin-export = ">=1.8,<2.0"
 
 [project]
-name = "easy_mirrors"
+name = "easy-mirrors"
 version = "0.3.1"
 description = "Simplest way to backup and restore git repositories"
 license = {text = "MIT"}
@@ -34,8 +34,8 @@ keywords = ["automation", "git"]
 dependencies = []
 
 [project.urls]
-"Issue tracker" = "https://github.com/vladpunko/easy_mirrors/issues"
-"Source code" = "https://github.com/vladpunko/easy_mirrors"
+"Issue tracker" = "https://github.com/vladpunko/easy-mirrors/issues"
+"Source code" = "https://github.com/vladpunko/easy-mirrors"
 
 [project.scripts]
 easy_mirrors = "easy_mirrors.__main__:main"

@@ -2,7 +2,7 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
-import subprocess
+import subprocess  # nosec
 
 __all__ = ["ConfigError", "ExternalProcessError", "FileSystemError"]
 
