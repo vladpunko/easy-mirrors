@@ -1,0 +1,58 @@
+---
+default_stages: [pre-commit]
+
+repos:
+  # Set the list of basic git hooks to find and fix common problems in the current working tree.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b
+    hooks:
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-toml
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  # Apply the code formatting tool to maintain a consistent style across the code base.
+  - repo: https://github.com/psf/black
+    rev: 8a737e727ac5ab2f1d4cf5876720ed276dc8dc4b
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/isort
+    rev: 0a0b7a830386ba6a31c2ec8316849ae4d1b8240d
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/pycqa/bandit
+    rev: c2c336d1273b06fb667a31d4ecb83de7ea23a6cb
+    hooks:
+      - id: bandit
+        additional_dependencies: ["bandit[toml]"]
+        args: ["-c", "pyproject.toml"]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: cf1542cefa3e766670b2066dd75c4571d682a649
+    hooks:
+      - id: flake8
+
+  # Use the static code checker to find and fix logical errors in python source code.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 871f3bcae4fe473cd7109c3a068db975dc035e3b
+    hooks:
+      - id: ruff
+
+  # The static type checker can be used to identify and locate errors in a program prior to its execution.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: bbc3dc1f890007061f18f17e2334f216ea9e5df7
+    hooks:
+      - id: mypy
+        additional_dependencies: ["pydantic>=2.10"]
+        files: ^(?!(docs|examples|tests)).*\.py$
+
+  # Find orphaned dependencies in python source code to improve code quality and reduce bloat.
+  - repo: https://github.com/fpgmaas/deptry.git
+    rev: 1edeef3edff88e1d9b03e6a6e1caeb017c0f3ef9
+    hooks:
+      - id: deptry
