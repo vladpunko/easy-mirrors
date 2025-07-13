@@ -37,7 +37,7 @@ Open `conf/local.conf` in your preferred editor and locate the following line. O
 MACHINE ??= "qemux86-64"  # options include arch-aarch64 or arch-x86-64
 ```
 
-To minimize the number of installed packages within the docker image, it is strongly recommended to use the ipk package format. Ensure this is configured by setting the following in your configuration file:
+To minimize the number of installed packages within the docker image, it is strongly recommended to use the `ipk` package format. Ensure this is configured by setting the following in your configuration file:
 
 ```conf
 PACKAGE_CLASSES ?= "package_ipk"
@@ -50,8 +50,10 @@ The next step is to build the base image by executing the following commands in 
 bitbake python3-image
 
 # Step -- 2.
-docker import ./tmp/deploy/images/<machine>/python3-image-<machine>.tar.bz2 python3-minimal:latest
+docker import "$(find "./tmp/deploy/images/${MACHINE?err}" -name 'python3-image-*.tar.bz2' | head -n 1)" python3-minimal:latest
 
 # Step -- 3.
 docker run --rm python3-minimal:latest python3 -c 'print(__import__("sys").executable)'
 ```
+
+To ensure architecture compatibility when using `docker import`, include the `--platform` flag only when the image was built for a different architecture than the host system. By default, docker uses [the native platform of the daemon](https://docs.docker.com/reference/cli/docker/image/import/#platform) during import. Specifying the correct platform explicitly helps avoid runtime issues when deploying images across different cpu architectures.
