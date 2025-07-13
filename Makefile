@@ -30,20 +30,21 @@ build: bootstrap
 	@poetry build --clean
 
 upload: build
-	@poetry run twine upload --non-interactive --skip-existing dist/*
+	@poetry run twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	@poetry run twine upload dist/*
 
 .PHONY: containers
 containers:
 	@env DOCKER_BUILDKIT=1 docker build \
 			--build-arg BASE_IMAGE='vladpunko/python3-easy-mirrors:3.10' \
 			--network host \
-			--platform=linux/amd64 \
+			--platform linux/amd64 \
 			--tag $(CONTAINER_NAME):$(CONTAINER_VERSION) \
 		$(PWD)
 	@env DOCKER_BUILDKIT=1 docker build \
 			--build-arg BASE_IMAGE='vladpunko/python3-easy-mirrors:3.10-aarch64' \
 			--network host \
-			--platform=linux/arm64 \
+			--platform linux/arm64 \
 			--tag $(CONTAINER_NAME):$(CONTAINER_VERSION)-aarch64 \
 		$(PWD)
 
