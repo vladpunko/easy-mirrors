@@ -28,7 +28,6 @@ build: bootstrap
 upload: TWINE_NON_INTERACTIVE = true
 upload: build
 	@poetry run twine upload --repository pypi --skip-existing dist/*
-	@poetry run twine upload --repository testpypi dist/*
 
 .PHONY: containers
 containers:
