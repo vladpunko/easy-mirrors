@@ -10,7 +10,6 @@ help:
 	@echo 'containers   - build the docker images on the current machine'
 	@echo 'hooks        - install all git hooks'
 	@echo 'tests        - run project tests'
-	@echo 'docs         - generate the project documentation'
 	@echo 'lint         - inspect project source code for problems and errors'
 	@echo 'clean        - clean up project environment and all the build artifacts'
 
