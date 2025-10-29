@@ -6,11 +6,13 @@ from __future__ import annotations
 
 import logging
 import logging.config
+import os
+import typing
 
 __all__ = ["setup"]
 
 
-def setup(level: int = logging.INFO) -> None:
+def setup(level: str = "INFO") -> None:
     """Sets up the logging system for the application."""
     logging.config.dictConfig(
         {
@@ -30,7 +32,19 @@ def setup(level: int = logging.INFO) -> None:
             "loggers": {
                 "easy_mirrors": {
                     "handlers": ["stderr"],
-                    "level": level,
+                    "level": typing.cast(
+                        int,
+                        {
+                            "CRITICAL": logging.CRITICAL,
+                            "ERROR": logging.ERROR,
+                            "WARNING": logging.WARNING,
+                            "INFO": logging.INFO,
+                            "DEBUG": logging.DEBUG,
+                            "NOTSET": logging.NOTSET,
+                        }.get(
+                            os.environ.get("EASY_MIRRORS_LOGGER_LEVEL", level).upper()
+                        ),
+                    ),
                 },
             },
             "version": 1,
