@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import errno
 import logging
+import os
 import sys
 import time
 import typing
@@ -74,7 +75,7 @@ def main() -> typing.NoReturn:
             "Abort this program runtime as a consequence of a keyboard interrupt."
         )
         # Terminate the execution of this program due to a keyboard interruption.
-        sys.exit(0)
+        sys.exit(os.EX_OK)
 
 
 if __name__ == "__main__":
