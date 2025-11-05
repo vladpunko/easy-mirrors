@@ -29,8 +29,12 @@ upload: build
 	@poetry run twine upload --repository pypi --skip-existing dist/*
 
 .PHONY: containers
+containers: IMAGE_TAG=$(shell poetry version --short)
 containers:
-	@env TAG=$(shell poetry version --short) docker buildx bake
+	@docker buildx bake
+	@docker manifest create docker.io/vladpunko/easy-mirrors:$(IMAGE_TAG) \
+		--amend docker.io/vladpunko/easy-mirrors:$(IMAGE_TAG)-amd64 \
+		--amend docker.io/vladpunko/easy-mirrors:$(IMAGE_TAG)-arm64
 
 hooks: bootstrap
 	@poetry run pre-commit install --config .githooks.yml

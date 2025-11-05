@@ -7,9 +7,9 @@ Simplest way to back up and restore git repositories.
 
 ## Installation
 
-Ensure that [git](https://git-scm.com) is installed on your system.
+Ensure that [git](https://git-scm.com/) is installed on your system.
 
-Use the package manager [pip](https://pip.pypa.io/en/stable) to install `easy-mirrors` along with its command-line interface by running:
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install `easy-mirrors` along with its command-line interface by running:
 
 ```bash
 python3 -m pip install --user easy-mirrors
@@ -65,4 +65,4 @@ tox && tox -e lint
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit)
+[MIT](https://choosealicense.com/licenses/mit/)
