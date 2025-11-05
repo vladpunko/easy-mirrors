@@ -2,13 +2,16 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
-LICENSE = "CLOSED"
+HOMEPAGE = "https://github.com/vladpunko/easy-mirrors"
 
-WHEEL_NAME = "easy_mirrors-0.3.1-py3-none-any.whl"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=f2b48c6b5565659a3aed6766c79e9a76"
 
-SRC_URI = "https://files.pythonhosted.org/packages/4f/cf/9cdcce5e073171d826a80ed4dcb7cabfd3fc513cb430aa7754a311f8c5c9/${WHEEL_NAME}"
-SRC_URI[md5sum] = "f8bc70ffedcdce6c5d4203778c63c179"
-SRC_URI[sha256sum] = "66c68b9f378e51ad849d1ad1831daa552aa581a227c7663fb63dda7d8980bbbb"
+WHEEL_NAME = "easy_mirrors-0.3.2-py3-none-any.whl"
+
+SRC_URI = "https://files.pythonhosted.org/packages/07/4d/5504f4171e4e85b2e00184f8a31d7ba81b8a497d2df88c45e59be00c1334/${WHEEL_NAME}"
+SRC_URI[md5sum] = "9879715b72027a39401d8e7b7eeb30df"
+SRC_URI[sha256sum] = "7ab73aa3a3ff4795e67c9a0016df6e0c116c928ee79bf71b09f3db8c04a558f8"
 
 # Enable native python build environment.
 inherit python3native
