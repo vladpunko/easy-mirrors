@@ -14,3 +14,19 @@
 ### Fixed
 
 - No bug fixes in this release.
+
+---
+
+## [Version: 0.3.2] - 2025-11-05
+
+### Added
+
+- No new features introduced in this release.
+
+### Changed
+
+- Updated configuration settings for the primary logging system.
+
+### Fixed
+
+- No bug fixes in this release.

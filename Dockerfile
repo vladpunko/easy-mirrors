@@ -2,7 +2,7 @@
 
 # Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
-ARG BASE_IMAGE="vladpunko/python3-easy-mirrors:3.10"
+ARG BASE_IMAGE="vladpunko/python3-easy-mirrors:3.10-qemuarm64"
 
 FROM ${BASE_IMAGE}
 
