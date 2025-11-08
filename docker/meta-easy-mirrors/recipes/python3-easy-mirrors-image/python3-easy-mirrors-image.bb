@@ -16,6 +16,7 @@ IMAGE_INSTALL = "\
     python3-core \
     python3-json \
     python3-logging \
+    python3-shell \
     python3-easy-mirrors \
 "
 

@@ -7,7 +7,13 @@ To reduce the Docker image size and avoid installing unnecessary components, the
 To launch the container using a custom configuration file and output directory, execute the following `docker run` command:
 
 ```bash
-docker run -d -v "$(pwd)/easy_mirrors.ini:/easy_mirrors.ini:ro" "docker.io/vladpunko/easy-mirrors:${IMAGE_TAG:?err}"
+docker run \
+    --detach \
+    --restart=unless-stopped \
+    --user="$(id -u):$(id -g)" \  # to avoid permission issues on mounted volumes
+    --volume="$(pwd)/easy_mirrors.ini:/easy_mirrors.ini:ro" \
+    --volume=/tmp:/tmp \  # this is for the logging system
+"docker.io/vladpunko/easy-mirrors:${IMAGE_TAG:?err}"
 ```
 
 By default, repositories will be cloned inside the container. It is strongly recommended to mount a directory from your host system to the path specified in the configuration file to persist cloned data and prevent data loss when the container is removed.
@@ -18,7 +24,7 @@ To create a minimal docker-compatible image using the Yocto Project and the `met
 
 ```bash
 # Step -- 1.
-git clone --branch scarthgap git://git.yoctoproject.org/poky.git
+git clone --branch walnascar git://git.yoctoproject.org/poky.git
 
 cd ./poky/
 
