@@ -14,9 +14,17 @@ import sys
 import time
 import typing
 
-from easy_mirrors import api, config, defaults, exceptions
+from easy_mirrors import api, config, defaults, exceptions, logger_wrapper
 
 logger = logging.getLogger("easy_mirrors")
+
+
+class ArgumentsNamespace(argparse.Namespace):
+    """Typed namespace representing all supported CLI parameters."""
+
+    config_path: str
+    synchronization_period: int
+    verbosity: str
 
 
 def main() -> typing.NoReturn:
@@ -24,41 +32,56 @@ def main() -> typing.NoReturn:
         description="Simplest way to mirror and restore git repositories."
     )
     parser.add_argument(
-        "-d",
-        "--debug",
-        action="store_const",
-        const=logging.DEBUG,  # level must be an int or a str
-        default=logging.INFO,
-        dest="logging_level",
-        help="generate extensive debugging output during command execution",
+        "-v",
+        "--verbosity",
+        type=str.upper,
+        metavar="LEVEL",
+        choices=[
+            "CRITICAL",
+            "ERROR",
+            "WARNING",
+            "INFO",
+            "DEBUG",
+            "NOTSET",
+        ],
+        default="INFO",
+        dest="verbosity",
+        help="select the logging level to determine which messages are displayed",
     )
     parser.add_argument(
         "-p",
         "--period",
         type=int,
-        default=1440,  # 24 * 60
         metavar="MINUTES",
+        default=1440,  # 24 * 60
         dest="synchronization_period",
         help="synchronization period in minutes (default: once per day)",
     )
+    parser.add_argument(
+        "-c",
+        "--config-path",
+        type=str,
+        metavar="PATH",
+        default=defaults.CONFIG_PATH,
+        dest="config_path",
+        help="the local path to a configuration file",
+    )
     try:
-        arguments = vars(parser.parse_args())
+        arguments = parser.parse_args(namespace=ArgumentsNamespace())
 
         # Assign a new severity level to the logging system.
-        logger.setLevel(arguments["logging_level"])
+        logger_wrapper.setup(arguments.verbosity)
 
-        # Step -- 1.
-        configuration = config.Config.load(path=defaults.CONFIG_PATH)
+        configuration = config.Config.load(
+            path=os.path.normpath(os.path.expanduser(arguments.config_path))
+        )
         logger.info(configuration)
 
-        # Step -- 2.
         while True:
             api.make_mirrors(configuration)
 
-            logger.info(
-                "Next attempt: %d minute(s).", arguments["synchronization_period"]
-            )
-            time.sleep(arguments["synchronization_period"] * 60)
+            logger.info("Next attempt: %d minute(s)", arguments.synchronization_period)
+            time.sleep(arguments.synchronization_period * 60)
     except (
         exceptions.ConfigError,
         exceptions.ExternalProcessError,
@@ -75,6 +98,10 @@ def main() -> typing.NoReturn:
             "Abort this program runtime as a consequence of a keyboard interrupt."
         )
         # Terminate the execution of this program due to a keyboard interruption.
+        sys.exit(os.EX_OK)
+
+    finally:
+        # Exit without errors.
         sys.exit(os.EX_OK)
 
 

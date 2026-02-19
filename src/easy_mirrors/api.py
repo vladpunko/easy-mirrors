@@ -17,27 +17,24 @@ logger = logging.getLogger("easy_mirrors")
 def make_mirrors(configuration: config.Config) -> None:
     """Clones or updates mirrored git repositories based on configuration."""
     for url in configuration.repositories:
-        logger.info("Mirroring repository: %s.", url)
+        logger.info("Mirroring repository: %s", url)
 
-        # Step -- 1.
         repository = git_repository.GitRepository.from_url(
             parent_path=configuration.path, url=url
         )
         logger.debug(repr(repository))
 
-        # Step -- 2.
         if not repository.exists_on_remote():
-            logger.warning("The remote repository does not exist: %s.", url)
+            logger.warning("The remote repository does not exist: %s", url)
 
             continue
 
-        # Step -- 3.
         if repository.exists_locally():
             repository.update_local_copy()  # git fetch
         else:
             if os.path.isdir(repository.local_path):
                 logger.warning(
-                    "Non-mirror repository detected at path: %s.", repository.local_path
+                    "Non-mirror repository detected at path: %s", repository.local_path
                 )
                 logger.warning("Skipping cloning.")
 

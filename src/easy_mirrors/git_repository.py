@@ -87,7 +87,7 @@ def _run_git_command(cmd: str, /, cwd: str | None = None, silent: bool = False) 
                 "An error occurred on while attempting to execute the command."
             )
         raise exceptions.ExternalProcessError(
-            f"Failed to execute the command: {cmd!s}."
+            f"Failed to execute the command: {cmd!s}"
         ) from err
 
 
@@ -224,7 +224,7 @@ class GitRepository:
         return True
 
     def update_local_copy(self) -> None:
-        """Fetchs the latest updates from the remote repository.
+        """Fetches the latest updates from the remote repository.
 
         This method synchronizes the local repository with the remote.
 

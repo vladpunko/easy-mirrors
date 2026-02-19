@@ -7,7 +7,7 @@ poetry-plugin-export = ">=1.8,<2.0"
 
 [project]
 name = "easy-mirrors"
-version = "0.3.2"
+version = "0.3.3"
 description = "Simplest way to backup and restore git repositories"
 license = {text = "MIT"}
 readme = "README.md"
