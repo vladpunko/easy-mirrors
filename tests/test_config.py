@@ -99,7 +99,7 @@ def test_config_load_with_error(caplog, fs, configuration_path):
     message = "Unable to access the configuration file at the specified location."
     assert message in caplog.text
 
-    message = "Unable to load configurations from the specified path: {0!s}.".format(
+    message = "Unable to load configurations from the specified path: {0!s}".format(
         str(configuration_path)
     )
     assert message == str(error.value)
@@ -116,7 +116,7 @@ def test_config_load_with_decode_error(caplog, fs, configuration_path):
     message = "The provided configuration contains syntax errors or missing fields."
     assert message in caplog.text
 
-    message = "Invalid or unreadable configurations at path: {0!s}.".format(
+    message = "Invalid or unreadable configurations at path: {0!s}".format(
         str(configuration_path)
     )
     assert message == str(error.value)

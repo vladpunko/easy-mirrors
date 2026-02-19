@@ -60,7 +60,7 @@ class PathField(_Field[str, str]):
         """
         if not isinstance(value, str):
             raise exceptions.ConfigError(
-                f"Path must be string, but received: {type(value).__name__!s}."
+                f"Path must be string, but received: {type(value).__name__!s}"
             )
 
         if not value:

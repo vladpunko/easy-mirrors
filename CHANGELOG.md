@@ -30,3 +30,21 @@
 ### Fixed
 
 - No bug fixes in this release.
+
+---
+
+## [Version: 0.3.3] - 2026-02-19
+
+### Added
+
+- Added `--verbosity` to specify the logging level that controls which messages are displayed.
+- Added the ability to change configurations using the command-line interface.
+
+### Changed
+
+- Removed `--debug` from the command-line interface.
+- Some logger messages have been modified to make them more readable and avoid ambiguous contexts.
+
+### Fixed
+
+- No bug fixes in this release.

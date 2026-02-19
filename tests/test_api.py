@@ -46,7 +46,7 @@ def test_existing_remote_and_local_repository(
         api.make_mirrors(config_mock)
 
     for url in config_mock.repositories:
-        message = "Mirroring repository: {0!s}.".format(url)
+        message = "Mirroring repository: {0!s}".format(url)
         assert message in caplog.text
 
         repository_mock.create_local_copy.assert_not_called()

@@ -160,5 +160,5 @@ def test_repository_update_local_copy_with_error(caplog, repository, local_path)
     message = "An error occurred on while attempting to execute the command."
     assert message in caplog.text
 
-    message = "Failed to execute the command: git fetch --all --prune --verbose."
+    message = "Failed to execute the command: git fetch --all --prune --verbose"
     assert message == str(error.value)
