@@ -42,7 +42,8 @@ def setup(level: str = "INFO") -> None:
                             "DEBUG": logging.DEBUG,
                             "NOTSET": logging.NOTSET,
                         }.get(
-                            os.environ.get("EASY_MIRRORS_LOGGER_LEVEL", level).upper()
+                            os.environ.get("EASY_MIRRORS_LOGGER_LEVEL", level).upper(),
+                            logging.INFO,  # fallback if provided unknown value
                         ),
                     ),
                 },
