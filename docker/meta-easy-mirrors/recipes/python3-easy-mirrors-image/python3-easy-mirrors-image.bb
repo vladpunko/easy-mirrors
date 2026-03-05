@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2025-11-05
 
 # Tell yocto to build the image in a container-compatible format.
 IMAGE_FSTYPES = "container"

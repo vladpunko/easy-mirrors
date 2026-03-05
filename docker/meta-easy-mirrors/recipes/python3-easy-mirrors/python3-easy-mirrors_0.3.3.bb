@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2026-02-19
 
 HOMEPAGE = "https://github.com/vladpunko/easy-mirrors"
 

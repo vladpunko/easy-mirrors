@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2025-07-12
 
 from __future__ import annotations
 
@@ -87,7 +88,7 @@ def _run_git_command(cmd: str, /, cwd: str | None = None, silent: bool = False) 
                 "An error occurred on while attempting to execute the command."
             )
         raise exceptions.ExternalProcessError(
-            f"Failed to execute the command: {cmd!s}"
+            f"Failed to execute the command: {cmd!r}"
         ) from err
 
 

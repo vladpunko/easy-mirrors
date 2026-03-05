@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2025-07-12
 
 import logging
 import os
@@ -46,7 +47,7 @@ def test_existing_remote_and_local_repository(
         api.make_mirrors(config_mock)
 
     for url in config_mock.repositories:
-        message = "Mirroring repository: {0!s}".format(url)
+        message = "Mirroring repository: {0!r}".format(url)
         assert message in caplog.text
 
         repository_mock.create_local_copy.assert_not_called()
