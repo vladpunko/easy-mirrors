@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2025-07-12
 
 from __future__ import annotations
 
@@ -77,7 +78,7 @@ class Config:
                 "Unable to access the configuration file at the specified location."
             )
             raise exceptions.FileSystemError(
-                f"Unable to load configurations from the specified path: {str(path)!s}"
+                f"Unable to load configurations from the specified path: {str(path)!r}"
             ) from err
 
         except configparser.Error as err:
@@ -85,7 +86,7 @@ class Config:
                 "The provided configuration contains syntax errors or missing fields."
             )
             raise exceptions.ConfigError(
-                f"Invalid or unreadable configurations at path: {str(path)!s}"
+                f"Invalid or unreadable configurations at path: {str(path)!r}"
             ) from err
 
         logger.debug(dict(config_parser[cls.section]))

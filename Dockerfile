@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2025 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created by: Vladislav Punko <iam.vlad.punko@gmail.com>
+# Created date: 2025-07-13
 
 ARG BASE_IMAGE="vladpunko/python3-easy-mirrors:3.10-qemuarm64"
 
